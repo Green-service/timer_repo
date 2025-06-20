@@ -1,73 +1,170 @@
-# Welcome to your Lovable project
 
-## Project info
+# ⏱️ Time Tracker - Mini Time Tracking Application
 
-**URL**: https://lovable.dev/projects/ede0e441-4f29-47fc-9500-566bfeeb43c2
+A beautiful, intuitive time tracking web application built with React, TypeScript, and Tailwind CSS. This project fulfills the Looped Automation technical challenge requirements and includes bonus features for an enhanced user experience.
 
-## How can I edit this code?
+## 🌟 Features
 
-There are several ways of editing your application.
+### Core Requirements ✅
+- **Time Entry Form**: Create time entries with task name and hours worked
+- **Time Entries List**: View all logged time entries with timestamps
+- **Total Hours Display**: Real-time calculation of total hours worked
+- **Input Validation**: Prevents empty task names, negative hours, and excessive entries
 
-**Use Lovable**
+### Bonus Features 🚀
+- **Edit/Delete Entries**: Full CRUD operations for time entries
+- **Live Timer**: Start/stop timer functionality with real-time tracking
+- **Persistent Storage**: Data persists using localStorage
+- **Responsive Design**: Mobile-friendly interface
+- **Beautiful UI**: Modern gradient design with smooth animations
+- **Toast Notifications**: User feedback for all actions
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/ede0e441-4f29-47fc-9500-566bfeeb43c2) and start prompting.
+## 🛠️ Technology Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with shadcn/ui components
+- **Icons**: Lucide React
+- **Build Tool**: Vite
+- **State Management**: React hooks (useState, useEffect)
+- **Data Persistence**: localStorage
 
-**Use your preferred IDE**
+## 🚀 Quick Start
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+- Node.js (version 16 or higher)
+- npm or yarn package manager
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation & Setup
 
-Follow these steps:
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd time-tracker
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. **Open your browser**
+   Navigate to `http://localhost:8080` to view the application
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Build for Production
+
+```bash
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+The built files will be in the `dist` directory, ready for deployment.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📱 Usage
 
-**Use GitHub Codespaces**
+### Adding Time Entries
+1. Enter a task name in the "Add Time Entry" form
+2. Specify the number of hours worked (supports decimals like 0.25 for 15 minutes)
+3. Click the "+" button or press Enter to add the entry
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Using the Live Timer
+1. Enter a task name in the timer section
+2. Click the play button to start timing
+3. Click "Stop & Save" to automatically create a time entry
+4. Use the reset button to clear the timer without saving
 
-## What technologies are used for this project?
+### Managing Entries
+- **Edit**: Click the edit icon to modify task name or hours
+- **Delete**: Click the trash icon to remove an entry
+- **View Total**: Total hours are calculated automatically and displayed prominently
 
-This project is built with:
+## 🔧 Key Design Decisions & Assumptions
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Data Storage
+- **localStorage**: Chosen for simplicity and immediate persistence without backend setup
+- **Data Structure**: Each entry includes id, taskName, hours, and timestamp
+- **Auto-save**: Changes are automatically persisted to localStorage
 
-## How can I deploy this project?
+### User Experience
+- **Validation**: Client-side validation prevents invalid entries (empty names, negative/excessive hours)
+- **Responsive**: Mobile-first design that works on all screen sizes
+- **Feedback**: Toast notifications provide immediate feedback for all user actions
+- **Timer Precision**: Timer tracks seconds but converts to hours with 2 decimal precision
 
-Simply open [Lovable](https://lovable.dev/projects/ede0e441-4f29-47fc-9500-566bfeeb43c2) and click on Share -> Publish.
+### Technical Choices
+- **Component Structure**: Single-page application with all functionality in the main Index component
+- **State Management**: Local React state sufficient for this scope
+- **Styling**: Utility-first Tailwind CSS with shadcn/ui for consistent components
+- **TypeScript**: Full type safety for better development experience
 
-## Can I connect a custom domain to my Lovable project?
+## 🎯 What I'd Improve With More Time
 
-Yes, you can!
+### Features
+- **Categories/Projects**: Organize tasks by project or category
+- **Date Range Filtering**: Filter entries by date ranges
+- **Export Functionality**: Export data as CSV or PDF reports
+- **Multiple Timers**: Run multiple timers simultaneously
+- **Time Goals**: Set daily/weekly time goals with progress tracking
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Technical Improvements
+- **Backend Integration**: Replace localStorage with proper database
+- **User Authentication**: Multi-user support with secure authentication
+- **Real-time Sync**: WebSocket or similar for real-time updates across devices
+- **Offline Support**: Service worker for offline functionality
+- **Advanced Analytics**: Charts and insights about time tracking patterns
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### UI/UX Enhancements
+- **Dark Mode**: Theme switching capability
+- **Keyboard Shortcuts**: Power user features for faster interaction
+- **Drag & Drop**: Reorder entries or batch operations
+- **Advanced Notifications**: Browser notifications for timer reminders
+- **Accessibility**: Enhanced screen reader support and keyboard navigation
+
+## 📊 Project Structure
+
+```
+src/
+├── components/
+│   └── ui/           # shadcn/ui components
+├── pages/
+│   └── Index.tsx     # Main application component
+├── lib/
+│   └── utils.ts      # Utility functions
+└── hooks/            # Custom React hooks
+```
+
+## 🧪 Testing the Application
+
+### Manual Testing Checklist
+- [ ] Add time entry with valid data
+- [ ] Attempt to add entry with empty task name (should show error)
+- [ ] Attempt to add entry with negative hours (should show error)
+- [ ] Edit existing entry
+- [ ] Delete entry
+- [ ] Start and stop timer
+- [ ] Verify data persists after page refresh
+- [ ] Test responsive design on mobile device
+
+### Validation Rules
+- Task name: Cannot be empty or only whitespace
+- Hours: Must be positive number, maximum 24 hours per entry
+- Timer: Requires task name before starting
+
+## 🚢 Deployment
+
+This application can be easily deployed to:
+- **Vercel**: `vercel --prod`
+- **Netlify**: Drag and drop the `dist` folder
+- **GitHub Pages**: Enable Pages in repository settings
+- **Any static hosting service**
+
+## 📝 License
+
+This project is part of a technical challenge for Looped Automation.
+
+---
+
+**Built with ❤️ using React, TypeScript, and Tailwind CSS**
