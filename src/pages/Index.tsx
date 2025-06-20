@@ -297,22 +297,16 @@ const Index = () => {
               
               {/* Content */}
               <div className="relative z-10 text-center">
-                <div className="text-3xl font-bold text-transparent bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-300 bg-clip-text mb-1 font-mono">
+                <div className="text-4xl font-bold text-white mb-1 font-mono drop-shadow-lg">
                   {totalHours.toFixed(2)}
                 </div>
-                <div className="text-sm text-blue-200/80 font-medium tracking-wider uppercase">
+                <div className="text-sm text-cyan-200 font-medium tracking-wider uppercase">
                   Hours
                 </div>
-                <div className="text-xs text-purple-300/60 mt-1">
+                <div className="text-xs text-blue-200 mt-1">
                   Total Tracked
                 </div>
               </div>
-              
-              {/* Decorative elements */}
-              <div className="absolute top-6 left-6 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
-              <div className="absolute top-10 right-8 w-1 h-1 bg-purple-400 rounded-full animate-pulse delay-500"></div>
-              <div className="absolute bottom-8 left-10 w-1.5 h-1.5 bg-blue-300 rounded-full animate-pulse delay-1000"></div>
-              <div className="absolute bottom-6 right-6 w-2 h-2 bg-indigo-400 rounded-full animate-pulse delay-700"></div>
             </div>
             
             {/* Rotating ring */}
