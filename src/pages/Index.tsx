@@ -318,13 +318,17 @@ const Index = () => {
         </div>
 
         {/* Time Entries List */}
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-slate-900/95 via-blue-900/95 to-purple-900/95 backdrop-blur-sm">
           <CardHeader>
-            <CardTitle>Time Entries ({entries.length})</CardTitle>
+            <CardTitle className="text-white flex items-center gap-2">
+              <div className="text-xl font-mono font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                Time Entries ({entries.length})
+              </div>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {entries.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-gray-400">
                 <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
                 <p>No time entries yet. Start tracking your time!</p>
               </div>
@@ -333,14 +337,14 @@ const Index = () => {
                 {entries.map((entry) => (
                   <div
                     key={entry.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                    className="flex items-center justify-between p-4 bg-white/5 hover:bg-white/10 rounded-lg transition-all duration-300 border border-cyan-400/20 hover:border-cyan-400/40 backdrop-blur-sm"
                   >
                     {editingEntry === entry.id ? (
                       <div className="flex-1 flex items-center gap-3">
                         <Input
                           value={editTaskName}
                           onChange={(e) => setEditTaskName(e.target.value)}
-                          className="flex-1"
+                          className="flex-1 bg-white/10 border-cyan-400/30 text-white placeholder:text-gray-300"
                         />
                         <Input
                           type="number"
@@ -349,13 +353,13 @@ const Index = () => {
                           min="0"
                           max="24"
                           step="0.25"
-                          className="w-24"
+                          className="w-24 bg-white/10 border-cyan-400/30 text-white"
                         />
                         <div className="flex gap-2">
                           <Button
                             size="sm"
                             onClick={() => saveEdit(entry.id)}
-                            className="bg-green-500 hover:bg-green-600"
+                            className="bg-green-500/80 hover:bg-green-600/80 backdrop-blur-sm"
                           >
                             Save
                           </Button>
@@ -363,6 +367,7 @@ const Index = () => {
                             size="sm"
                             variant="outline"
                             onClick={cancelEdit}
+                            className="border-gray-400/30 text-gray-300 hover:bg-white/10"
                           >
                             Cancel
                           </Button>
@@ -371,13 +376,13 @@ const Index = () => {
                     ) : (
                       <>
                         <div className="flex-1">
-                          <div className="font-medium text-gray-900">{entry.taskName}</div>
-                          <div className="text-sm text-gray-500">
+                          <div className="font-medium text-white text-lg">{entry.taskName}</div>
+                          <div className="text-sm text-cyan-200/80 font-mono">
                             {entry.timestamp.toLocaleDateString()} at {entry.timestamp.toLocaleTimeString()}
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
-                          <div className="text-lg font-semibold text-blue-600">
+                          <div className="text-2xl font-bold text-cyan-400 font-mono">
                             {entry.hours} hrs
                           </div>
                           <div className="flex gap-2">
@@ -385,6 +390,7 @@ const Index = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => startEdit(entry)}
+                              className="border-cyan-400/30 text-cyan-400 hover:bg-cyan-400/10"
                             >
                               <Edit3 className="w-4 h-4" />
                             </Button>
@@ -392,6 +398,7 @@ const Index = () => {
                               size="sm"
                               variant="destructive"
                               onClick={() => deleteEntry(entry.id)}
+                              className="bg-red-500/80 hover:bg-red-600/80 backdrop-blur-sm"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
