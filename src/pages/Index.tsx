@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Clock, Plus, Timer, Trash2, Edit3, Play, Pause, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -309,8 +310,10 @@ const Index = () => {
               </div>
             </div>
             
-            {/* Rotating ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-spin" style={{ animationDuration: '3s' }}></div>
+            {/* Horizontal line */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+            </div>
           </div>
         </div>
 
