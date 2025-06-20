@@ -18,8 +18,8 @@ A beautiful and futuristic time tracking application to boost your productivity.
 
 ### Setup
 ```sh
-npm install
-npm run dev
+   npm install
+   npm run dev
 ```
 Visit [http://localhost:8080](http://localhost:8080) (or the port shown in your terminal).
 
