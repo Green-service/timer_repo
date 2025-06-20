@@ -25,6 +25,7 @@ const Index = () => {
   // Timer state
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(0);
+  const [timerMs, setTimerMs] = useState(0);
   const [timerTaskName, setTimerTaskName] = useState('');
   const [isTimerLoading, setIsTimerLoading] = useState(false);
 
@@ -45,9 +46,10 @@ const Index = () => {
     // Load timer state
     const savedTimer = localStorage.getItem('timerState');
     if (savedTimer) {
-      const { isRunning, seconds } = JSON.parse(savedTimer);
+      const { isRunning, seconds, ms } = JSON.parse(savedTimer);
       setIsTimerRunning(isRunning);
-      setTimerSeconds(seconds);
+      setTimerSeconds(seconds || 0);
+      setTimerMs(ms || 0);
       setTimerTaskName(''); // Always reset task name on refresh
     }
   }, []);
@@ -61,17 +63,24 @@ const Index = () => {
   useEffect(() => {
     localStorage.setItem('timerState', JSON.stringify({
       isRunning: isTimerRunning,
-      seconds: timerSeconds
+      seconds: timerSeconds,
+      ms: timerMs
     }));
-  }, [isTimerRunning, timerSeconds]);
+  }, [isTimerRunning, timerSeconds, timerMs]);
 
   // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isTimerRunning) {
       interval = setInterval(() => {
-        setTimerSeconds(prev => prev + 1);
-      }, 1000);
+        setTimerMs(prevMs => {
+          if (prevMs + 10 >= 1000) {
+            setTimerSeconds(prevSec => prevSec + 1);
+            return 0;
+          }
+          return prevMs + 10;
+        });
+      }, 10);
     }
     return () => clearInterval(interval);
   }, [isTimerRunning]);
@@ -111,12 +120,12 @@ const Index = () => {
     setTaskName('');
     setHours('');
     setIsAddLoading(false);
-    toast.success('Time entry added successfully!');
+    toast.success('Time entry added successfully!', { duration: 1000 });
   };
 
   const deleteEntry = (id: string) => {
     setEntries(prev => prev.filter(entry => entry.id !== id));
-    toast.success('Time entry deleted');
+    toast.success('Time entry deleted', { duration: 1000 });
   };
 
   const startEdit = (entry: TimeEntry) => {
@@ -126,16 +135,33 @@ const Index = () => {
   };
 
   const saveEdit = (id: string) => {
+    const entry = entries.find(e => e.id === id);
+    if (!entry) return;
+    // For timer entries, only validate the name
+    if (entry.seconds !== undefined) {
+      if (!editTaskName.trim()) {
+        toast.error('Task name cannot be empty');
+        return;
+      }
+      setEntries(prev => prev.map(e =>
+        e.id === id ? { ...e, taskName: editTaskName.trim() } : e
+      ));
+      setEditingEntry(null);
+      setEditTaskName('');
+      setEditHours('');
+      toast.success('Time entry updated successfully!');
+      return;
+    }
+    // For manual entries, validate both
     const error = validateInput(editTaskName, editHours);
     if (error) {
       toast.error(error);
       return;
     }
-
-    setEntries(prev => prev.map(entry => 
-      entry.id === id 
-        ? { ...entry, taskName: editTaskName.trim(), hours: parseFloat(editHours) }
-        : entry
+    setEntries(prev => prev.map(e =>
+      e.id === id
+        ? { ...e, taskName: editTaskName.trim(), hours: parseFloat(editHours), seconds: undefined }
+        : e
     ));
     setEditingEntry(null);
     setEditTaskName('');
@@ -155,27 +181,28 @@ const Index = () => {
       return;
     }
     setIsTimerRunning(true);
-    toast.success('Timer started!');
+    toast.success('Timer started!', { duration: 1000 });
   };
 
   const stopTimer = async () => {
-    if (timerSeconds > 0 && timerTaskName.trim()) {
+    if ((timerSeconds > 0 || timerMs > 0) && timerTaskName.trim()) {
       setIsTimerLoading(true);
       await new Promise(res => setTimeout(res, 1000)); // Simulate loading
-      const hoursWorked = parseFloat((timerSeconds / 3600).toFixed(2));
+      const hoursWorked = parseFloat(((timerSeconds + timerMs / 1000) / 3600).toFixed(2));
       const newEntry: TimeEntry = {
         id: Date.now().toString(),
         taskName: timerTaskName.trim(),
         hours: hoursWorked,
         timestamp: new Date(),
-        seconds: timerSeconds,
+        seconds: timerSeconds + timerMs / 1000,
       };
       setEntries(prev => [newEntry, ...prev]);
       setIsTimerLoading(false);
-      toast.success('Timer saved!');
+      toast.success('Timer saved!', { duration: 1000 });
     }
     setIsTimerRunning(false);
     setTimerSeconds(0);
+    setTimerMs(0);
     setTimerTaskName('');
   };
 
@@ -184,24 +211,20 @@ const Index = () => {
     await new Promise(res => setTimeout(res, 1000)); // Simulate loading
     setIsTimerRunning(false);
     setTimerSeconds(0);
+    setTimerMs(0);
     setTimerTaskName('');
     setIsResetLoading(false);
     toast.success('Timer reset');
   };
 
-  const formatTime = (seconds: number): string => {
-    if (seconds < 60) {
-      return `${seconds}s`;
-    } else if (seconds < 3600) {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    } else {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
+  // Helper to split time for display
+  const getTimeParts = (seconds: number, ms: number = 0) => {
+    const totalMs = seconds * 1000 + ms;
+    const h = Math.floor(totalMs / 3600000).toString().padStart(2, '0');
+    const m = Math.floor((totalMs % 3600000) / 60000).toString().padStart(2, '0');
+    const s = Math.floor((totalMs % 60000) / 1000).toString().padStart(2, '0');
+    const msDisplay = Math.floor((totalMs % 1000) / 10).toString().padStart(2, '0');
+    return { h, m, s, ms: msDisplay };
   };
 
   // Calculate total hours using seconds if available
@@ -249,19 +272,35 @@ const Index = () => {
                 <div className="absolute inset-6 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 blur-md"></div>
                 {/* Timer Content */}
                 <div className="relative z-10 flex flex-col items-center justify-center">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className="text-6xl font-mono font-extrabold text-cyan-200 drop-shadow-xl tracking-widest select-none cursor-pointer">
-                {formatTime(timerSeconds)}
+                  <div className="flex justify-center gap-2">
+                    {(() => {
+                      const { h, m, s, ms } = getTimeParts(timerSeconds, timerMs);
+                      return (
+                        <>
+                          <div className="flex flex-col items-center">
+                            <span className="text-xs font-semibold tracking-widest text-cyan-300/80">Hours</span>
+                            <span className="text-4xl font-mono font-extrabold text-cyan-200 drop-shadow-xl select-none cursor-pointer">{h}</span>
+                          </div>
+                          <span className="text-5xl font-mono font-extrabold text-cyan-400 pt-7">:</span>
+                          <div className="flex flex-col items-center">
+                            <span className="text-xs font-semibold tracking-widest text-cyan-300/80">Minutes</span>
+                            <span className="text-4xl font-mono font-extrabold text-cyan-200 drop-shadow-xl select-none cursor-pointer">{m}</span>
+                          </div>
+                          <span className="text-5xl font-mono font-extrabold text-cyan-400 pt-7">:</span>
+                          <div className="flex flex-col items-center">
+                            <span className="text-xs font-semibold tracking-widest text-cyan-300/80">Seconds</span>
+                            <span className="text-4xl font-mono font-extrabold text-cyan-200 drop-shadow-xl select-none cursor-pointer">{s}</span>
+                          </div>
+                          <span className="text-5xl font-mono font-extrabold text-cyan-400 pt-7">:</span>
+                          <div className="flex flex-col items-center">
+                            <span className="text-xs font-semibold tracking-widest text-cyan-300/80">MS</span>
+                            <span className="text-4xl font-mono font-extrabold text-cyan-200 drop-shadow-xl select-none cursor-pointer">{ms}</span>
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </div>
               </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" align="center">
-                        Live timer: tracking your task
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
                 {/* Futuristic ticks */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   {[...Array(12)].map((_, i) => (
@@ -480,15 +519,17 @@ const Index = () => {
                           onChange={(e) => setEditTaskName(e.target.value)}
                           className="flex-1 bg-white/10 border-cyan-400/30 text-white placeholder:text-gray-300"
                         />
-                        <Input
-                          type="number"
-                          value={editHours}
-                          onChange={(e) => setEditHours(e.target.value)}
-                          min="0"
-                          max="24"
-                          step="0.25"
-                          className="w-24 bg-white/10 border-cyan-400/30 text-white"
-                        />
+                        {entry.seconds === undefined && (
+                          <Input
+                            type="number"
+                            value={editHours}
+                            onChange={(e) => setEditHours(e.target.value)}
+                            min="0"
+                            max="24"
+                            step="0.25"
+                            className="w-24 bg-white/10 border-cyan-400/30 text-white"
+                          />
+                        )}
                         <div className="flex gap-2">
                           <Button
                             size="sm"
@@ -517,7 +558,10 @@ const Index = () => {
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-2xl font-bold text-cyan-400 font-mono">
-                            {entry.seconds !== undefined ? formatTime(entry.seconds) : `${entry.hours} hrs`}
+                            {entry.seconds !== undefined ? (() => {
+                              const { h, m, s, ms } = getTimeParts(Math.floor(entry.seconds), Math.round((entry.seconds % 1) * 1000));
+                              return `${h}:${m}:${s}:${ms}`;
+                            })() : `${entry.hours} hrs`}
                           </div>
                           <div className="flex gap-2">
                             <Button
