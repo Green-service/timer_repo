@@ -197,10 +197,10 @@ const Index = () => {
       const remainingSeconds = seconds % 60;
       return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
     } else {
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      const remainingSeconds = seconds % 60;
-      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
   };
 
@@ -253,8 +253,8 @@ const Index = () => {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div className="text-6xl font-mono font-extrabold text-cyan-200 drop-shadow-xl tracking-widest select-none cursor-pointer">
-                          {formatTime(timerSeconds)}
-                        </div>
+                {formatTime(timerSeconds)}
+              </div>
                       </TooltipTrigger>
                       <TooltipContent side="top" align="center">
                         Live timer: tracking your task
@@ -284,35 +284,35 @@ const Index = () => {
             )}
             {/* Timer Controls & Input */}
             <div className="w-full flex flex-col items-center gap-4">
-              {!isTimerRunning ? (
+            {!isTimerRunning ? (
                 <div className="flex gap-2 w-full max-w-md">
-                  <Input
-                    placeholder="Enter task name for timer..."
-                    value={timerTaskName}
-                    onChange={(e) => setTimerTaskName(e.target.value)}
+                <Input
+                  placeholder="Enter task name for timer..."
+                  value={timerTaskName}
+                  onChange={(e) => setTimerTaskName(e.target.value)}
                     className="flex-1 bg-white/10 border-cyan-400/30 text-cyan-100 placeholder:text-cyan-300/60 focus:ring-cyan-400/30 focus:border-cyan-400/50 shadow-inner backdrop-blur-md"
-                    onKeyPress={(e) => e.key === 'Enter' && startTimer()}
-                  />
+                  onKeyPress={(e) => e.key === 'Enter' && startTimer()}
+                />
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button 
-                          onClick={startTimer}
+                <Button 
+                  onClick={startTimer}
                           className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 border-0 shadow-lg text-white px-6 py-2 text-lg font-bold rounded-full transition-all duration-200"
-                        >
+                >
                           <Play className="w-6 h-6" />
-                        </Button>
+                </Button>
                       </TooltipTrigger>
                       <TooltipContent side="top" align="center">
                         Start timer for this task
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
-                </div>
-              ) : (
+              </div>
+            ) : (
                 <div className="flex gap-4 justify-center">
-                  <Button 
-                    onClick={stopTimer}
+                <Button 
+                  onClick={stopTimer}
                     className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 border-0 shadow-lg text-white px-6 py-2 text-lg font-bold rounded-full flex items-center gap-2 transition-all duration-200"
                     disabled={isTimerLoading}
                   >
@@ -321,11 +321,11 @@ const Index = () => {
                     ) : (
                       <Pause className="w-5 h-5" />
                     )}
-                    Stop & Save
-                  </Button>
-                  <Button 
-                    onClick={resetTimer}
-                    variant="outline"
+                  Stop & Save
+                </Button>
+                <Button 
+                  onClick={resetTimer}
+                  variant="outline"
                     className="bg-gradient-to-r from-slate-800 to-blue-900 border-cyan-400/30 text-cyan-200 hover:bg-blue-900/80 hover:text-white shadow-md px-4 py-2 rounded-full flex items-center gap-2"
                     disabled={isResetLoading}
                   >
@@ -334,9 +334,9 @@ const Index = () => {
                     ) : (
                       <RotateCcw className="w-5 h-5" />
                     )}
-                  </Button>
-                </div>
-              )}
+                </Button>
+              </div>
+            )}
             </div>
           </CardContent>
         </Card>
@@ -377,8 +377,8 @@ const Index = () => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button 
-                        onClick={addTimeEntry}
+                <Button 
+                  onClick={addTimeEntry}
                         className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 border-0 shadow-lg text-white px-6 py-3 text-lg font-bold rounded-full transition-all duration-200 flex items-center justify-center"
                         disabled={isAddLoading}
                       >
@@ -387,7 +387,7 @@ const Index = () => {
                         ) : (
                           <Plus className="w-5 h-5" />
                         )}
-                      </Button>
+                </Button>
                     </TooltipTrigger>
                     <TooltipContent side="top" align="center">
                       Add a new time entry
